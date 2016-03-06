@@ -1,0 +1,27 @@
+{
+  "name": "partyguide.webapi",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "morgan": "^1.7.0",
+    "mongoose": "^4.4.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SumejjaPorca/PartyGuide.WebAPI.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SumejjaPorca/PartyGuide.WebAPI/issues"
+  },
+  "homepage": "https://github.com/SumejjaPorca/PartyGuide.WebAPI#readme"
+}
