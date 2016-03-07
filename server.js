@@ -39,6 +39,8 @@ router.get('/dummies', function(req, res){
   });
 });
 
+var BarCtrl = require('./controllers/bars.controller');
+router.use('/bars', BarCtrl);
 // more routes for our API will happen here
 
 // REGISTER OUR ROUTES -------------------------------

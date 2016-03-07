@@ -13,4 +13,4 @@ var BarSchema = new Schema({
   description:String
 });
 
-module.exports = mongoose.model('bar', UserSchema);
+module.exports = mongoose.model('bar', BarSchema);
