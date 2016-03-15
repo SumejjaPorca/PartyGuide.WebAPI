@@ -1,27 +1,40 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var UserSchema = new Schema({
+  id: {
+    type: Schema.Types.ObjectId,
+    required: true
+  },
+  username: {
+    type: String,
+    required: true
+  }
+});
+
+
 var ReviewSchema = new Schema({
-  // There shouldn't be
   barId:{
     type:Schema.Types.ObjectId,
     required:true
   },
-  userId:{
-    type:Schema.Types.ObjectId,
+  user:{
+    type: UserSchema
     required:true
   },
-  rate:{ //
+  rate:{ 
     type:Number,
+    min:1.
+    max:5,
     required:true
   },
-  comment:String,
-  created:{
+  dateCreated:{
     type:Date,
     default: Date.now
-  }
+  },
+  comment:String
 });
 
-ReviewSchema.index({barId: 1, userId: 1}, {unique:true})
+ReviewSchema.index({barId: 1, "user.id": 1}, {unique:true})
 
 module.exports = mongoose.model('review', ReviewSchema);
