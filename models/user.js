@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var emailRgx = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
 var UserSchema = new Schema({
   username: {
     type:String,
@@ -8,6 +10,7 @@ var UserSchema = new Schema({
   },
   email:{
     type:String,
+    match: emailRgx,
     required:true
   },
   password:{
