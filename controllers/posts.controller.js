@@ -6,7 +6,7 @@ var Bar = require('../models/Bar') // Bar model
 var PostCtrl = express.Router()
 
 // Get all by barId
-PostCtrl.get('/:barId',function(req, res){
+PostCtrl.get('/bars/:barId/posts',function(req, res){
   //check if bar with specified id exists
   //if not, return 'Bad Request'
   Bar.findOne({_id:req.params.barId}).then(function(data){
@@ -24,18 +24,18 @@ PostCtrl.get('/:barId',function(req, res){
 });
 
 // Get post by id, 404 if post with that id doesn't exist
-PostCtrl.get('/:id', function(req, res){
+PostCtrl.get('/posts/:id', function(req, res){
   Post.findOne({_id:req.params.id}).then(function(data){
     if (!data) return res.status(404).json({message:"There is no post written with this id."});
     res.json(data);
   }, function(err){
-    return res.status(501).json(err);
+    return res.status(500).json(err);
   });
 });
 
 // Create new post, 404 if new req body has validation errors
 //TODO: required method
-PostCtrl.post('/', function (req, res){
+PostCtrl.post('/posts', function (req, res){
   //Check if bar with id provided in body of req exists
   //if not, return bad request
   Bar.findOne({_id:req.params.barId}).then(function(data){
@@ -43,9 +43,9 @@ PostCtrl.post('/', function (req, res){
       else{
         var post = new Post(req.body);
         Post.save().then(function(newPost){
-          res.json(newPost)
+          res.status(201).json(newPost)
         }, function(err){
-          res.status(404).json(err);
+          res.status(500).json(err);
         });
       }
   });

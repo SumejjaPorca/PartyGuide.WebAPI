@@ -43,6 +43,9 @@ router.get('/dummies', function(req, res){
 var BarCtrl = require('./controllers/bars.controller');
 router.use('/bars', BarCtrl);
 
+// Mount Post Controller on /api/posts route
+var PostCtrl = require('./controllers/posts.controller');
+router.use('', PostCtrl);
 
 // more routes for our API will happen here
 
