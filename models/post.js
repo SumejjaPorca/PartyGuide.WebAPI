@@ -19,7 +19,8 @@ var PostSchema = new Schema({
   },
   title:{
     type: String,
-    required: true
+    required: true,
+    max: 100
   },
   author:{
     type: Author,
