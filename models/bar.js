@@ -10,6 +10,7 @@ var BarSchema = new Schema({
     address:String,
     geo:[Number] //[<longitude>,<latitude>]
   },
+  tags: [String],
   description:String
 });
 
