@@ -37,4 +37,4 @@ var PostSchema = new Schema({
   date: Date
 });
 
-module.exports = mongoose.model('post', postSchema);
+module.exports = mongoose.model('post', PostSchema);
