@@ -1,7 +1,7 @@
 var express    = require('express');
 var mongoose = require('mongoose');
-var Post = require('../models/Post') // Post model
-var Bar = mongoose.model('Bar'); // Bar model
+var Post = mongoose.model('post') // Post model
+var Bar = mongoose.model('bar'); // Bar model
 
 // controller will be exported and used as Router
 var PostCtrl = express.Router()
@@ -13,15 +13,11 @@ PostCtrl.get('/bars/:barId/posts',function(req, res){
   Bar.findOne({_id:req.params.barId}).then(function(data){
       if (!data) return res.status(400).json({message:"There is no bar with this id."});
       else {
-        Post.find(
-          {
-          barId: req.params.barId
-          },
-          function(err, data){
+        Post.find({ barId: req.params.barId },function(err, data){
           if (err) return res.json(err);
           res.json(data);
-          });
-        }
+        });
+      }
     });
 });
 

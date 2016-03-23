@@ -8,7 +8,9 @@ var express    = require('express');
 var app        = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var morgan = require('morgan')
+var morgan = require('morgan');
+require('./models/compile')();
+
 mongoose.connect('mongodb://localhost:27017/nwt');
 
 // configure app to use bodyParser()
