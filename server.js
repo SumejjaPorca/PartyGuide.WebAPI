@@ -8,8 +8,18 @@ var express    = require('express');
 var app        = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var morgan = require('morgan')
-mongoose.connect('mongodb://localhost:27017/nwt');
+var morgan = require('morgan');
+var config = require('./config');
+require('./models/compile')();
+
+// Connect to database. If failed write message and exit with error status
+mongoose.connect(config.database, function(err){
+  if(err){
+    console.error("Failed to connect to database.")
+    console.error(JSON.stringify(err));
+    process.exit(1);
+  }
+});
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -29,15 +39,9 @@ router.get('/', function(req, res) {
     res.json({ message: 'Hooray! welcome to our api!' });
 });
 
-var Dummy = require('./models/dummy')
-
-// test route GET http://localhost:8080/api/dummies
-router.get('/dummies', function(req, res){
-  Dummy.find(function(err, bars){
-    if(err) return console.log(err);
-    res.json(bars);
-  });
-});
+// Mount authentification Ctrl
+var UserCtrl = require('./controllers/user.controller');
+router.use('/user', UserCtrl);
 
 // Mount Bar Controller on /api/bars route
 var BarCtrl = require('./controllers/bars.controller');

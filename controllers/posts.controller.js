@@ -1,6 +1,6 @@
 var express    = require('express');
 var mongoose = require('mongoose');
-var Post = require('../models/Post') // Post model
+var Post = mongoose.model('post') // Post model
 var Bar = mongoose.model('bar'); // Bar model
 
 // controller will be exported and used as Router

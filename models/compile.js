@@ -1,0 +1,7 @@
+module.exports = function(){
+  var mongoose = require('mongoose');
+  var Bar = require('./bar') // Bar model
+  var Post = require('./post')
+  var Review = require('./review')
+  var User = require('./user')
+};

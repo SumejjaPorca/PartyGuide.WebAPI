@@ -19,12 +19,12 @@ var ReviewSchema = new Schema({
     required:true
   },
   user:{
-    type: UserSchema
+    type: UserSchema,
     required:true
   },
-  rate:{ 
+  rate:{
     type:Number,
-    min:1.
+    min:1,
     max:5,
     required:true
   },
