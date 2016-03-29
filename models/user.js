@@ -15,10 +15,16 @@ var UserSchema = new Schema({
   },
   password:{
     type:String,
-    required:true
+    required:true,
+    // We don't want to fetch user's password
+    select:false
   },
   adminOf:[Schema.Types.ObjectId],
   superadmin: Boolean
 });
+
+
+UserSchema.index({username: 1}, {unique:true});
+UserSchema.index({email: 1}, {unique:true});
 
 module.exports = mongoose.model('user', UserSchema);
