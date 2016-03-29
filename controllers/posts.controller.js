@@ -1,7 +1,7 @@
 var express    = require('express');
 var mongoose = require('mongoose');
 var Post = require('../models/Post') // Post model
-var Bar = mongoose.model('Bar'); // Bar model
+var Bar = mongoose.model('bar'); // Bar model
 
 // controller will be exported and used as Router
 var PostCtrl = express.Router()
@@ -15,11 +15,11 @@ PostCtrl.get('/bars/:barId/posts',function(req, res){
       else {
         Post.find(
           {
-          barId: req.params.barId
+            barId: req.params.barId
           },
           function(err, data){
-          if (err) return res.json(err);
-          res.json(data);
+            if (err) return res.json(err);
+            res.json(data);
           });
         }
     });
