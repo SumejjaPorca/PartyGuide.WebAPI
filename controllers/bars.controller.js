@@ -37,6 +37,8 @@ BarCtrl.post('/byTags',function(req, res){
 
 //Get all bars that near the location from the request
 BarCtrl.get('/near',function(req, res){
+  console.log("dist:" + req.query.distance);
+  var maxDistance = req.query.distance || 5000;
   Bar.find({
     'location.geo': {
       $nearSphere: {
@@ -45,7 +47,7 @@ BarCtrl.get('/near',function(req, res){
             coordinates:[+req.query.lat, +req.query.long]
           },
           $minDistance:0,
-          $maxDistance:5000
+          $maxDistance:maxDistance
       }
     }
   }).limit(20).then(function(bars){
@@ -70,7 +72,7 @@ BarCtrl.get('/:id', function(req, res){
 authProvider.authorize(BarCtrl, 'post', '/', function (req, res){
   // Only user can
   if (!req.user.superadmin){
-    res.status(401).json({
+    return res.status(401).json({
       success:false,
       notSuperadmin:true,
       message:"You must be superadmin to perform this action."

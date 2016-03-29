@@ -61,6 +61,7 @@ module.exports.middleware = function(req,res,next){
     // there is no token
     res.status(401).json({
       success:false,
+      noToken:true,
       message:"No token provided."
     });
 

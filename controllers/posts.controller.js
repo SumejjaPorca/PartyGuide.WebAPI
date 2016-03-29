@@ -48,12 +48,15 @@ PostCtrl.get('/posts/:id', function(req, res){
   }
   //Check if bar with id provided in body of req exists
   //if not, return bad request
-  Bar.findOne({_id:req.params.barId}).then(function(data){
+  console.log(JSON.stringify(req.user));
+  Bar.findOne({_id:req.body.barId}).then(function(data){
       if (!data) return res.status(400).json({message:"There is no bar with this id."});
       else{
        //401 if user not logged in or user not admin of the bar
-        var adminOf = req.user.adminOf.map(function(x){return x.valueOf()});
-        if(adminOf.indexOf(req.params.barId) <= -1 ){
+        var adminOf = req.user.adminOf.map(function(x){return x.toString()});
+        console.log(JSON.stringify(adminOf));
+        console.log(typeof adminOf[0])
+        if(adminOf.indexOf(req.body.barId) <= -1 ){
           return res.status(401).json({
             success:false,
             message:"You must be admin of the bar to perform this action."
@@ -62,11 +65,16 @@ PostCtrl.get('/posts/:id', function(req, res){
         //user is authorized to do this method
         //TO DO: check if adding with subschema like this is possible
         var post = new Post(req.body);
-        Post.save(post).then(function(newPost){
+        post.author = {
+          username:req.user.username,
+          userId:req.user.id
+        };
+        post.save().then(function(newPost){
           res.status(201).json(newPost)
         }, function(err){
           res.status(500).json(err);
         });
+
       }
   });
 });

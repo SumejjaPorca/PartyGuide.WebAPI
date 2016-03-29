@@ -1,6 +1,6 @@
 var express    = require('express');
 var mongoose = require('mongoose');
-var Review = mongoose.model('bar'); // Review model
+var Review = mongoose.model('review'); // Review model
 var Bar = mongoose.model('bar'); // Bar model
 var authProvider = require('../providers/auth') //auth provider to authorize methods
 
@@ -38,12 +38,17 @@ ReviewCtrl.get('/bars/:barId/reviews',function(req, res){
   }
   //Check if bar with id provided in body of req exists
   //if not, return bad request
-  Bar.findOne({_id:req.params.barId}).then(function(data){
+  Bar.findOne({_id:req.body.barId}).then(function(data){
       if (!data) return res.status(400).json({message:"There is no bar with this id."});
       else{
         //TO DO: check if adding with subschema like this is possible
         var review = new Review(req.body);
-        Review.save(review).then(function(newReview){
+        review.user = {
+          username:req.user.username,
+          id:req.user.id
+        };
+
+        review.save().then(function(newReview){
           res.status(201).json(newReview)
         }, function(err){
           res.status(500).json(err);
@@ -53,22 +58,26 @@ ReviewCtrl.get('/bars/:barId/reviews',function(req, res){
 });
 
 //Delete review
-authProvider.authorize(ReviewCtrl, 'delete', '/reviews/delete/:id', function(req, res){
+authProvider.authorize(ReviewCtrl, 'delete', '/reviews/:id', function(req, res){
   // user must be author of the review to delete it
-  if (!req.user){
+  /*if (!req.user){
     return res.status(401).json({
       success:false,
       message:"You must be logged in to perform this action."
     });
-  }
+  }*/
+
+  console.log("ovjde1");
   // find review with this id
   Review.findOne({_id:req.params.id}).then(function(review){
+
+    console.log("ovjde2");
     if (!review) return res.status(404).json({
       success:false,
       message:"There is no review with this id."
     });
     //check if user is the author of the review
-    if(review.user.id != user.id)
+    if(review.user.id != req.user.id)
     {
       return res.status(401).json({
         success:false,
@@ -76,7 +85,8 @@ authProvider.authorize(ReviewCtrl, 'delete', '/reviews/delete/:id', function(req
       });
     }
     // remove review
-    bar.remove(function(err){
+    console.log("ovjde");
+    review.remove(function(err){
       if (err) return res.status(400).json({
         success:false,
         message:err
