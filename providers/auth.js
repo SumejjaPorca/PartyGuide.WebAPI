@@ -106,7 +106,7 @@ module.exports.middleware = function(req,res,next){
   }
 }
 
-// Authorize some request 
+// Authorize some request
 module.exports.authorize = function(router, method, route, cb){
   router[method](route, module.exports.middleware);
   router[method](route, cb);

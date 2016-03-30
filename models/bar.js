@@ -14,7 +14,7 @@ var BarSchema = new Schema({
   },
   phone:{
     type:String,
-    match:phoneRgx
+    match:[phoneRgx, "Wrong phone number format."]
   },
   tags: [String],
   description:String

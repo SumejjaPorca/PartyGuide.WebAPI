@@ -1,7 +1,8 @@
 var express    = require('express');
 var mongoose = require('mongoose');
-var Bar = mongoose.model('bar') // Bar model
-var authProvider = require('../providers/auth')
+var Bar = mongoose.model('bar'); // Bar model
+var User = mongoose.model('user');
+var authProvider = require('../providers/auth');
 
 // Our controller is router which we will exports
 var BarCtrl = express.Router()
@@ -54,7 +55,7 @@ authProvider.authorize(BarCtrl, 'post', '/', function (req, res){
   });
 });
 
-
+// Delete bar
 authProvider.authorize(BarCtrl, 'delete', '/:id', function(req, res){
   // user must be superadmin to delete bar
   if (!req.user.superadmin){
@@ -87,6 +88,83 @@ authProvider.authorize(BarCtrl, 'delete', '/:id', function(req, res){
 
   }, function(err){
     // database error
+    throw err;
+  });
+});
+
+authProvider.authorize(BarCtrl, 'get', '/:id/admins', function(req,res){
+  var barId = req.params.id;
+  User.find({adminOf:barId}).select("id username").then(function(users){
+    res.status(200).json(users);
+  }, function(err){
+    // database error
+    throw err;
+  });
+});
+
+// Change all bars admins
+authProvider.authorize(BarCtrl, 'put', '/:id/admins', function(req,res){
+  // only superadmin can change adins
+  if (!req.user.superadmin){
+    res.status(401).json({
+      success:false,
+      notSuperadmin:true,
+      message:"You must be superadmin to perform this action."
+    });
+  }
+
+  var barId = req.params.id;
+  User.find({adminOf:barId}).select("_id").then(function(users){
+    var oldUsers = users.map(function(item){return item.id;});
+    var newUsers = req.body;
+
+    // find users that we need to add to admins
+    var toAdd = [];
+    newUsers.forEach(function(user){
+      if(typeof user !== "string"){
+        res.status(400).json({
+          message: "All elements of array must be strings"
+        });
+      }
+      if(oldUsers.indexOf(user)<0){
+        toAdd.push(user);
+        console.log("To add:" + user);
+      }
+    });
+
+    // find users that we need to remove from admins
+    var toRemove = [];
+    oldUsers.forEach(function(user){
+      if(newUsers.indexOf(user)<0){
+        toRemove.push(user);
+
+        console.log("To remove:" + user);
+      }
+    });
+
+    // Add newIds
+    User.update({ _id:{ $in:toAdd } },
+      { $addToSet:{ adminOf:barId } },
+      { multi:true }, function(err){
+
+      if(err) throw err;
+      // succesfully added new admins
+
+      User.update({ _id:{ $in:toRemove } },
+        { $pull:{ adminOf:barId } },
+        { multi:true }, function(err){
+
+        if (err) throw err;
+
+        res.status(200).json();
+
+      });
+
+    });
+
+
+  }, function(err){
+    // database
     throw err;
   });
 });
