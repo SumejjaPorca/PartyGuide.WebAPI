@@ -18,7 +18,25 @@ BarCtrl.get('/',function(req, res){
 
 // Get all bars by name
 BarCtrl.get('/:name',function(req, res){
-  Bar.find({name:req.params.name}).then(function(bars){
+  Bar.find({name: req.params.name}).then(function(bars){
+    return res.status(200).json(bars);
+  }, function(err){
+    return res.status(501).json(err);
+  });
+});
+
+//Get all bars that have tag in tags from the request
+BarCtrl.post('/byTags',function(req, res){
+  Bar.find({tags: {$in: req.body.tags}}).then(function(bars){
+    return res.status(200).json(bars);
+  }, function(err){
+    return res.status(501).json(err);
+  });
+});
+
+//Get all bars that near the location from the request
+BarCtrl.get('/near',function(req, res){
+  Bar.find({location: {$near: [req.query.lat, req.query.long]}}).limit(20).then(function(bars){
     return res.status(200).json(bars);
   }, function(err){
     return res.status(501).json(err);
