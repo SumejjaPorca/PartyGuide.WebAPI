@@ -15,12 +15,21 @@ BarCtrl.get('/',function(req, res){
   });
 });
 
+// Get all bars by name
+BarCtrl.get('/:name',function(req, res){
+  Bar.find({name:req.params.name}).then(function(bars){
+    return res.status(200).json(bars);
+  }, function(err){
+    return res.status(501).json(err);
+  });
+});
+
 
 // Get bar by id, 404 if bar doesn't exist
 BarCtrl.get('/:id', function(req, res){
   Bar.findOne({_id:req.params.id}).then(function(bar){
     if (!bar) return res.status(404).json({message:"There is no bar with this id."});
-
+    return res.status(200).json(bar);
   }, function(err){
     return res.status(501).json(err);
   });
