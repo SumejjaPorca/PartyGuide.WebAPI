@@ -52,4 +52,47 @@ ReviewCtrl.get('/bars/:barId/reviews',function(req, res){
   });
 });
 
+//Delete review
+authProvider.authorize(ReviewCtrl, 'delete', '/reviews/delete/:id', function(req, res){
+  // user must be author of the review to delete it
+  if (!req.user){
+    return res.status(401).json({
+      success:false,
+      message:"You must be logged in to perform this action."
+    });
+  }
+  // find review with this id
+  Review.findOne({_id:req.params.id}).then(function(review){
+    if (!review) return res.status(404).json({
+      success:false,
+      message:"There is no review with this id."
+    });
+    //check if user is the author of the review
+    if(review.user.id != user.id)
+    {
+      return res.status(401).json({
+        success:false,
+        message:"You must be author of this review to perform this action."
+      });
+    }
+    // remove review
+    bar.remove(function(err){
+      if (err) return res.status(400).json({
+        success:false,
+        message:err
+      });
+
+      res.status(200).json({
+        success:true,
+        removed:true
+      });
+
+    });
+
+  }, function(err){
+    // database error
+    throw err;
+  });
+});
+
 module.exports = ReviewCtrl;
