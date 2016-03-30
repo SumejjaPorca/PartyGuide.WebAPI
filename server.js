@@ -51,6 +51,10 @@ router.use('/bars', BarCtrl);
 var PostCtrl = require('./controllers/posts.controller');
 router.use('', PostCtrl);
 
+// Mount Review Controller on /api/reviews route
+var ReviewCtrl = require('./controllers/reviews.controller');
+router.use('', ReviewCtrl);
+
 // more routes for our API will happen here
 
 // REGISTER OUR ROUTES -------------------------------
