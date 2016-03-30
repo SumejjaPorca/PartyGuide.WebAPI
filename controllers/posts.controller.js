@@ -2,6 +2,7 @@ var express    = require('express');
 var mongoose = require('mongoose');
 var Post = mongoose.model('post') // Post model
 var Bar = mongoose.model('bar'); // Bar model
+var authProvider = require('../providers/auth') //auth provider to authorize methods
 
 // controller will be exported and used as Router
 var PostCtrl = express.Router()
@@ -35,14 +36,30 @@ PostCtrl.get('/posts/:id', function(req, res){
   });
 });
 
-// Create new post, 404 if new req body has validation errors
-//TODO: required method
-PostCtrl.post('/posts', function (req, res){
+// Create new post
+//400 if new req body has validation errors or bad parameters
+ authProvider.authorize(PostCtrl, 'post', '/posts', function (req, res){
+  //check if user is logged in
+  if (!req.user){
+    return res.status(401).json({
+      success:false,
+      message:"You must be logged in to perform this action."
+    });
+  }
   //Check if bar with id provided in body of req exists
   //if not, return bad request
   Bar.findOne({_id:req.params.barId}).then(function(data){
       if (!data) return res.status(400).json({message:"There is no bar with this id."});
       else{
+       //401 if user not logged in or user not admin of the bar
+        var adminOf = req.user.adminOf.map(function(x){return x.valueOf()});
+        if(adminOf.indexOf(req.params.barId) <= -1 ){
+          return res.status(401).json({
+            success:false,
+            message:"You must be admin of the bar to perform this action."
+          });
+        }
+        //user is authorized to do this method
         var post = new Post(req.body);
         Post.save().then(function(newPost){
           res.status(201).json(newPost)
