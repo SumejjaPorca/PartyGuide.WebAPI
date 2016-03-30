@@ -20,4 +20,7 @@ var BarSchema = new Schema({
   description:String
 });
 
+// we need to ensureIndex so we can search with nearSphere
+
+BarSchema.index({'location.geo':"2dsphere"});
 module.exports = mongoose.model('bar', BarSchema);

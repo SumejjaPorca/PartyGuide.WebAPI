@@ -17,8 +17,9 @@ BarCtrl.get('/',function(req, res){
 });
 
 // Get all bars by name
-BarCtrl.get('/:name',function(req, res){
-  Bar.find({name: req.params.name}).then(function(bars){
+BarCtrl.get('/byName/:name',function(req, res){
+
+  Bar.find({name: new RegExp(req.params.name,'i') }).then(function(bars){
     return res.status(200).json(bars);
   }, function(err){
     return res.status(501).json(err);
@@ -36,7 +37,18 @@ BarCtrl.post('/byTags',function(req, res){
 
 //Get all bars that near the location from the request
 BarCtrl.get('/near',function(req, res){
-  Bar.find({location: {$near: [req.query.lat, req.query.long]}}).limit(20).then(function(bars){
+  Bar.find({
+    'location.geo': {
+      $nearSphere: {
+          $geometry:{
+            type:"point",
+            coordinates:[+req.query.lat, +req.query.long]
+          },
+          $minDistance:0,
+          $maxDistance:5000
+      }
+    }
+  }).limit(20).then(function(bars){
     return res.status(200).json(bars);
   }, function(err){
     return res.status(501).json(err);
@@ -77,7 +89,7 @@ authProvider.authorize(BarCtrl, 'post', '/', function (req, res){
 authProvider.authorize(BarCtrl, 'delete', '/:id', function(req, res){
   // user must be superadmin to delete bar
   if (!req.user.superadmin){
-    res.status(401).json({
+    return res.status(401).json({
       success:false,
       notSuperadmin:true,
       message:"You must be superadmin to perform this action."
@@ -110,6 +122,34 @@ authProvider.authorize(BarCtrl, 'delete', '/:id', function(req, res){
   });
 });
 
+// Edit bars information: name, description, tags, location and phone
+authProvider.authorize(BarCtrl, 'put', '/:id', function(req, res){
+  // find bar with this ID
+  Bar.findOne({_id:req.params.id}).then(function(bar){
+    if (!bar) return res.status(404).json({
+      success:false,
+      message:"There is no bar with this id."
+    });
+
+    // change bar
+    bar.name = req.body.name;
+    bar.description = req.body.description;
+    bar.location = req.body.location;
+    bar.phone = req.body.phone;
+    bar.tags = req.body.tags;
+
+    bar.save(function(err){
+      if(err) return res.status(400).json(err);
+
+      res.status(200).json();
+    });
+  }, function(err){
+    // database error
+    throw err;
+  });
+});
+
+// Get all bar admins
 authProvider.authorize(BarCtrl, 'get', '/:id/admins', function(req,res){
   var barId = req.params.id;
   User.find({adminOf:barId}).select("id username").then(function(users){
