@@ -11,12 +11,18 @@ var mongoose = require('mongoose');
 var morgan = require('morgan');
 var config = require('./config');
 require('./models/compile')();
+var registration = require('./providers/registration');
 
+registration.configure(function(err,options){
+  if(err) return console.log("Error"+ err);
+  console.log("Configured: ");
+  console.log(options);
+})
 // Connect to database. If failed write message and exit with error status
 mongoose.connect(config.database, function(err){
   if(err){
     console.error("Failed to connect to database.")
-    console.error(JSON.stringify(err));
+    console.error(err);
     process.exit(1);
   }
 });

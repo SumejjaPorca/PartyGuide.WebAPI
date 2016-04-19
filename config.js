@@ -1,5 +1,34 @@
 module.exports = {
-  'database': 'mongodb://localhost:27017/nwt',
+  'database': 'mongodb://127.0.0.1:27017/nwt',
   'secret': 'lukajezakon',
-  'tokenExpiration': 86400 // in seconds, 86400 sec = 24 h
+  'tokenExpiration': 86400, // in seconds, 86400 sec = 24 h
+  'emailConfirmation': {
+    'expirationTime': 86400, // 24h
+    'verificationURL': 'http://127.0.0.1:3000/#/confirm-email/${URL}',
+    'URLLength': 48,
+    'transportOptions': {
+      service: 'Gmail',
+      auth: {
+        user: 'partyguide.nwt@gmail.com',
+        pass: 'UnoMomento123!'
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    },
+    verifyMailOptions: {
+        from: 'Do Not Reply <partyguide.nwt@gmail.com>',
+        subject: 'Confirm your account',
+        html: '<p>Please verify your account by clicking <a href="${URL}">this link</a>. If you are unable to do so, copy and ' +
+                'paste the following link into your browser:</p><p>${URL}</p>',
+        text: 'Please verify your account by clicking the following link, or by copying and pasting it into your browser: ${URL}'
+    },
+    shouldSendConfirmation: false,
+    confirmMailOptions: {
+        from: 'Do Not Reply <partyguide.nwt@gmail.com>',
+        subject: 'Successfully verified!',
+        html: '<p>Your account has been successfully verified.</p>',
+        text: 'Your account has been successfully verified.'
+    }
+  }
 }

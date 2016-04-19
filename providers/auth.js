@@ -96,6 +96,7 @@ module.exports.middleware = function(req,res,next){
           });
         } else {
           // User found - save it for later use
+          delete user.password;
           req.user = user;
           next();
         }

@@ -4,7 +4,8 @@ var User = mongoose.model('user') // User model
 var passHash = require('password-hash');
 var jwt = require('jsonwebtoken');
 var config = require('../config');
-var authProvider = require('../providers/auth')
+var authProvider = require('../providers/auth');
+var registrationProvider = require('../providers/registration');
 
 // controller will be exported and used as Router
 var UserCtrl = express.Router()
@@ -17,7 +18,10 @@ authProvider.authorize(UserCtrl, 'get', '/', function(req,res){
 });
 
 // Create new user, 404 if new req body has validation errors
-UserCtrl.post('/register', function (req, res){
+UserCtrl.post('/register', registrationProvider.registerUser);
+UserCtrl.post('/confirm-email', registrationProvider.confirmEmail);
+
+/* function (req, res){
   //User
   if (req.body.superadmin) {
     delete req.body.superadmin;
@@ -40,7 +44,7 @@ UserCtrl.post('/register', function (req, res){
     res.status(404).json(err);
   });
 
-});
+});*/
 
 // POST {"username":<username>,"password":<password>}
 UserCtrl.post('/login', authProvider.getToken);

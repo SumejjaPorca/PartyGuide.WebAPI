@@ -17,7 +17,7 @@ var UserSchema = new Schema({
     type:String,
     required:true,
     // We don't want to fetch user's password
-    select:false
+    //select:false
   },
   adminOf:[Schema.Types.ObjectId],
   superadmin: Boolean
