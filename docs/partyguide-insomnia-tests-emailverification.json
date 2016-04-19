@@ -1,0 +1,518 @@
+{
+  "_type": "export",
+  "__export_format": 1,
+  "__export_date": "2016-04-19T22:35:42.165Z",
+  "__export_source": "insomnia.chrome.app:v2.6.10",
+  "items": [
+    {
+      "_type": "request_group",
+      "_id": "grp_1459257282245",
+      "name": "UserCtrl",
+      "environments": {},
+      "requests": [
+        {
+          "_type": "request",
+          "_id": "req_1459257282245",
+          "url": "http://localhost:8080/api/user/register",
+          "method": "POST",
+          "body": "{\n    \"username\":\"luka2\",\n    \"email\":\"pejovicluka454@gmail.com\",\n    \"password\":\"UnoMomento123\"\n}",
+          "headers": [],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "registration"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1461095583626",
+          "url": "http://localhost:8080/api/user/confirm-email",
+          "method": "POST",
+          "body": "{\n    \"code\": \"uRQIqtgin3RW9OhEfwd5ZkwLYB0bBCWlwUU7NO8BzGvfaQ8l\"\n}",
+          "headers": [],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "email confirmation"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459257925319",
+          "url": "http://localhost:8080/api/user/login",
+          "method": "POST",
+          "body": "{\n    \"username\":\"luka2\",\n    \"password\":\"UnoMomento123\"\n}",
+          "headers": [],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "login"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459267810872",
+          "url": "http://localhost:8080/api/user",
+          "method": "GET",
+          "body": "{}",
+          "headers": [
+            {
+              "name": "x-access-token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU2ZmE4MWJhZmViZDU1MTQxZDIwZGNjOSIsImlhdCI6MTQ1OTM0NDA1OCwiZXhwIjoxNDU5NDMwNDU4fQ.EjLgIPtYiRsBt4rkTdJZwt2xNeD14SbSD6qT1O59pmsX"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "getUsers"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459268072424",
+          "url": "http://localhost:8080/api/user",
+          "method": "GET",
+          "body": "{}",
+          "headers": [
+            {
+              "name": "x-access-token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU2ZmE4MWJhZmViZDU1MTQxZDIwZGNjOSIsImlhdCI6MTQ1OTI2ODAzNiwiZXhwIjoxNDU5MjY4MDQwfQ.SzJehdLMS48QzBiKDRySq7Q8rdKTDHswoD4QdjyJPLY"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "expiredToken"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459302239689",
+          "url": "http://localhost:8080/api/user",
+          "method": "GET",
+          "body": "{}",
+          "headers": [
+            {
+              "name": "x-access-token",
+              "value": "eyJ0eXAiOiJKV1QiLCsJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU2ZmE4MWJhZmViZDU1MTQxZDIwZGNjOSIsImlhdCI6MTQ1OTI2ODAzNiwiZXhwIjoxNDU5MjY4MDQwfQ.SzJehdLMS48QzBiKDRySq7Q8rdKTDHswoD4QdjyJPLY"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "invalidToken"
+        }
+      ]
+    },
+    {
+      "_type": "request_group",
+      "_id": "grp_1459271014952",
+      "name": "BarCtrl",
+      "environments": {},
+      "requests": [
+        {
+          "_type": "request",
+          "_id": "req_1459271014952",
+          "url": "http://localhost:8080/api/bars",
+          "method": "POST",
+          "body": "{\n    \"name\":\"Ne znam svejedno lupi nesto\",\n    \"location\":{\n        \"address\":\"Zmaja od Bosne 73, Sarajevo 71000, Bosnia & Herzegovina\",\n        \"geo\":[43.8517075,18.3791132]\n    },\n    \"tags\":[\"neki\",\"do sad\"],\n    \"description\":\"Karaoke svakog petka.\",\n    \"phone\":\"+38733246312\"\n}",
+          "headers": [
+            {
+              "name": "x-access-token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU2ZmE4MWJhZmViZDU1MTQxZDIwZGNjOSIsImlhdCI6MTQ1OTM0MzY0OSwiZXhwIjoxNDU5NDMwMDQ5fQ.9bWNvWARh-_JmX-qqgxmyDetryDPLG_k8qpaXYRWeQ0"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "CreateBar"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459337914280",
+          "url": "http://localhost:8080/api/bars/56faf74d607372b4125bf97c",
+          "method": "PUT",
+          "body": "{\n    \"name\":\"Novi Pro-Rock Club Johnny\",\n    \"location\":{\n        \"address\":\"Zmaja od Bosne 73, Sarajevo 71000, Bosnia & Herzegovina\",\n        \"geo\":[43.8517072,18.3791131]\n    },\n    \"tags\":[\"rock\",\"pro-rock\",\"punk\",\"metal\"],\n    \"description\":\"Karaoke svakog petka.\",\n    \"phone\":\"+38733246312\"\n}",
+          "headers": [
+            {
+              "name": "x-access-token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU2ZmFlMmNiOWEzYmU3ZTgxOTAzNTc0ZCIsImlhdCI6MTQ1OTMwMjY2OCwiZXhwIjoxNDU5Mzg5MDY4fQ.3EqvOmlg_iH6WezY-BmZiKmg5nfhAuasPwz1_dxCDK4"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "ChangeBar"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459271647009",
+          "url": "http://localhost:8080/api/bars",
+          "method": "GET",
+          "body": "",
+          "headers": [],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "GetBars"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459340144900",
+          "url": "http://localhost:8080/api/bars/56faf74d607372b4125bf97c",
+          "method": "GET",
+          "body": "",
+          "headers": [],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "GetBars by Id"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459274644070",
+          "url": "http://localhost:8080/api/bars/56fbd1421fbe78d0207852fd",
+          "method": "DELETE",
+          "body": "",
+          "headers": [
+            {
+              "name": "x-access-token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU2ZmE4MWJhZmViZDU1MTQxZDIwZGNjOSIsImlhdCI6MTQ1OTM0NDA1OCwiZXhwIjoxNDU5NDMwNDU4fQ.EjLgIPtYiRsBt4rkTdJZwt2xNeD14SbSD6qT1O59pms"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "Delete Bar"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459295850324",
+          "url": "http://localhost:8080/api/bars/56faf74d607372b4125bf97c/admins",
+          "method": "GET",
+          "body": "[\"56fa81bafebd55141d20dcc9\", \"56fae2cb9a3be7e81903574d\"]",
+          "headers": [
+            {
+              "name": "x-access-token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU2ZmE4MWJhZmViZDU1MTQxZDIwZGNjOSIsImlhdCI6MTQ1OTI5NTQ1NSwiZXhwIjoxNDU5MzgxODU1fQ.0jL8LVtW4ibO91vZ_If-Dzsp8_Z7Lw3R0BM91CKnq-w"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "Get Admins"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459288271571",
+          "url": "http://localhost:8080/api/bars/56faf74d607372b4125bf97c/admins",
+          "method": "PUT",
+          "body": "[\"56fa81bafebd55141d20dcc9\"]",
+          "headers": [
+            {
+              "name": "x-access-token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU2ZmE4MWJhZmViZDU1MTQxZDIwZGNjOSIsImlhdCI6MTQ1OTI5NTQ1NSwiZXhwIjoxNDU5MzgxODU1fQ.0jL8LVtW4ibO91vZ_If-Dzsp8_Z7Lw3R0BM91CKnq-w"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "Change Admins"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459338259645",
+          "url": "http://localhost:8080/api/bars/byname/Johnny",
+          "method": "GET",
+          "body": "{}",
+          "headers": [],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "Search by name"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459339114657",
+          "url": "http://localhost:8080/api/bars/bytags",
+          "method": "POST",
+          "body": "{\n    \"tags\":[\"neki\", \"rock\"]\n}",
+          "headers": [],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "Search by tags"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459339385595",
+          "url": "http://localhost:8080/api/bars/near?lat=43.8017072&long=18.3791131&distance=10000",
+          "method": "GET",
+          "body": "{\n    \"tags\":[\"rock\"]\n}",
+          "headers": [],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "near"
+        }
+      ]
+    },
+    {
+      "_type": "request_group",
+      "_id": "grp_1459340403286",
+      "name": "PostCtrl",
+      "environments": {},
+      "requests": [
+        {
+          "_type": "request",
+          "_id": "req_1459340403286",
+          "url": "http://localhost:8080/api/posts",
+          "method": "POST",
+          "body": "{\n    \"barId\":\"56faf74d607372b4125bf97c\",\n    \"title\":\"Moj prvi post22\",\n    \"text\":\"Ovo je neki text\"\n}",
+          "headers": [
+            {
+              "name": "x-access-token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU2ZmFlMmNiOWEzYmU3ZTgxOTAzNTc0ZCIsImlhdCI6MTQ1OTM0NTM1MywiZXhwIjoxNDU5NDMxNzUzfQ.cI7pfoSnNGEqLTvmW4sSOQC9Z-J4pZ64iwK0-142Zig"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "CreatePost"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459341161633",
+          "url": "http://localhost:8080/api/bars/56faf74d607372b4125bf97c/posts",
+          "method": "GET",
+          "body": "{\n    \"barId\":\"56faf74d607372b4125bf97c\",\n    \"title\":\"Moj prvi post\",\n    \"text\":\"Ovo je neki text\"\n}",
+          "headers": [
+            {
+              "name": "x-access-token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU2ZmFlMmNiOWEzYmU3ZTgxOTAzNTc0ZCIsImlhdCI6MTQ1OTMwMjY2OCwiZXhwIjoxNDU5Mzg5MDY4fQ.3EqvOmlg_iH6WezY-BmZiKmg5nfhAuasPwz1_dxCDK4"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "Get all post by barId"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459341218568",
+          "url": "http://localhost:8080/api/posts/56fbc752a3b1cab81aef57a6",
+          "method": "GET",
+          "body": "{}",
+          "headers": [],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "Get one post"
+        }
+      ]
+    },
+    {
+      "_type": "request_group",
+      "_id": "grp_1459341332130",
+      "name": "ReviewCtrl",
+      "environments": {},
+      "requests": [
+        {
+          "_type": "request",
+          "_id": "req_1459341450276",
+          "url": "http://localhost:8080/api/reviews",
+          "method": "POST",
+          "body": "{\n    \"barId\":\"56faf74d607372b4125bf97c\",\n    \"comment\":\"Ovo je neki komentar 22\",\n    \"rate\":3\n}",
+          "headers": [
+            {
+              "name": "x-access-token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU2ZmFlMmNiOWEzYmU3ZTgxOTAzNTc0ZCIsImlhdCI6MTQ1OTMwMjY2OCwiZXhwIjoxNDU5Mzg5MDY4fQ.3EqvOmlg_iH6WezY-BmZiKmg5nfhAuasPwz1_dxCDK4"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "CreateReview"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459341412493",
+          "url": "http://localhost:8080/api/bars/56faf74d607372b4125bf97c/reviews",
+          "method": "GET",
+          "body": "{}",
+          "headers": [],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "Get all bar reviews"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459341804675",
+          "url": "http://localhost:8080/api/reviews/56fbd71344fd44840d946331",
+          "method": "DELETE",
+          "body": "",
+          "headers": [
+            {
+              "name": "x-access-token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU2ZmFlMmNiOWEzYmU3ZTgxOTAzNTc0ZCIsImlhdCI6MTQ1OTMwMjY2OCwiZXhwIjoxNDU5Mzg5MDY4fQ.3EqvOmlg_iH6WezY-BmZiKmg5nfhAuasPwz1_dxCDK4"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "DeleteReview"
+        }
+      ]
+    }
+  ]
+}
