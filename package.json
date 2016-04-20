@@ -11,7 +11,9 @@
     "merge": "^1.2.0",
     "mongoose": "^4.4.6",
     "morgan": "^1.7.0",
-    "password-hash": "^1.2.2"
+    "nodemailer": "^2.3.2",
+    "password-hash": "^1.2.2",
+    "rand-token": "^0.2.1"
   },
   "devDependencies": {},
   "scripts": {

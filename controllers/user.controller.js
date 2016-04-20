@@ -20,31 +20,8 @@ authProvider.authorize(UserCtrl, 'get', '/', function(req,res){
 // Create new user, 404 if new req body has validation errors
 UserCtrl.post('/register', registrationProvider.registerUser);
 UserCtrl.post('/confirm-email', registrationProvider.confirmEmail);
-
-/* function (req, res){
-  //User
-  if (req.body.superadmin) {
-    delete req.body.superadmin;
-  }
-
-  if (req.body.password) {
-      req.body.password = passHash.generate(req.body.password);
-  }
-
-  var user = new User(req.body);
-  user.save().then(function(newUser){
-
-    res.json({
-      id: newUser.id,
-      username: newUser.username,
-      email: newUser.email,
-      adminOf: newUser.adminOf
-    });
-  }, function(err){
-    res.status(404).json(err);
-  });
-
-});*/
+UserCtrl.post('/request-reset-pass', registrationProvider.requestResetPassword);
+UserCtrl.post('/reset-pass', registrationProvider.resetPassword);
 
 // POST {"username":<username>,"password":<password>}
 UserCtrl.post('/login', authProvider.getToken);

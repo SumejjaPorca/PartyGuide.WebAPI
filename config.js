@@ -30,5 +30,26 @@ module.exports = {
         html: '<p>Your account has been successfully verified.</p>',
         text: 'Your account has been successfully verified.'
     }
+  },
+  'resetPassword':{
+    tokenLength:64,
+    resetURL:'http://localhost:3000/#/reset-password/${CODE}',
+    resetMailOptions:{
+      from: 'Do Not Reply <partyguide.nwt@gmail.com>',
+      subject: 'Reset your password',
+      html: '<p>Reset your password by clicking <a href="${URL}">this link</a>. If you are unable to do so, copy and ' +
+              'paste the following link into your browser:</p><p>${URL}</p>',
+      text: 'Reset your password by clicking the following link, or by copying and pasting it into your browser: ${URL}'
+    },
+    transportOptions: {
+      service: 'Gmail',
+      auth: {
+        user: 'partyguide.nwt@gmail.com',
+        pass: 'UnoMomento123!'
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    }
   }
 }
