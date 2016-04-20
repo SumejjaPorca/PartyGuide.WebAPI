@@ -41,7 +41,8 @@ module.exports.getToken = function(req,res){
         res.status(200).json({
           success: true,
           message: "Login successful.",
-          token: token
+          token: token,
+          username: user.username
         });
       }
     }
