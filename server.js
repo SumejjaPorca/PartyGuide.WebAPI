@@ -10,8 +10,11 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var morgan = require('morgan');
 var config = require('./config');
+var cors = require('cors');
+
 require('./models/compile')();
 var registration = require('./providers/registration');
+
 
 registration.configure(function(err,options){
   if(err) return console.log("Error"+ err);
@@ -39,6 +42,7 @@ var port = process.env.PORT || 8080;        // set our port with --port arg, def
 // ROUTES FOR OUR API
 // =============================================================================
 var router = express.Router();              // get an instance of the express Router
+app.use('*', cors()); // enable cors
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {

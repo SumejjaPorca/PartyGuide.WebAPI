@@ -20,7 +20,7 @@ module.exports.getToken = function(req,res){
   }
 
   // find user with this username
-  User.findOne({ $or: [{username:req.body.username},{email:req.body.username}] }).select({'password':1}).then(function(user){
+  User.findOne({ $or: [{username:req.body.username},{email:req.body.username}] }).select({'password':1,'username':1}).then(function(user){
     // check does user exist
     if (!user){
       res.status(400).json({success:false, message:"Wrong username."});

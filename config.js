@@ -4,7 +4,7 @@ module.exports = {
   'tokenExpiration': 86400, // in seconds, 86400 sec = 24 h
   'emailConfirmation': {
     'expirationTime': 86400, // 24h
-    'verificationURL': 'http://127.0.0.1:3000/#/confirm-email/${URL}',
+    'verificationURL': 'http://127.0.0.1:3000/#/emailConfirmation/${URL}',
     'URLLength': 48,
     'transportOptions': {
       service: 'Gmail',
@@ -23,7 +23,7 @@ module.exports = {
                 'paste the following link into your browser:</p><p>${URL}</p>',
         text: 'Please verify your account by clicking the following link, or by copying and pasting it into your browser: ${URL}'
     },
-    shouldSendConfirmation: false,
+    shouldSendConfirmation: true,
     confirmMailOptions: {
         from: 'Do Not Reply <partyguide.nwt@gmail.com>',
         subject: 'Successfully verified!',
