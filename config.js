@@ -4,8 +4,8 @@ module.exports = {
   'tokenExpiration': 86400, // in seconds, 86400 sec = 24 h
   'emailConfirmation': {
     'expirationTime': 86400, // 24h
-    'verificationURL': 'http://127.0.0.1:3000/#/emailConfirmation/${URL}',
-    'URLLength': 48,
+    'verificationURL': 'http://127.0.0.1:3000/#/emailConfirmation/${CODE}',
+    'tokenLength': 48,
     'transportOptions': {
       service: 'Gmail',
       auth: {

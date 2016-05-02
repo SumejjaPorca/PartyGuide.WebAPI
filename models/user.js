@@ -20,7 +20,8 @@ var UserSchema = new Schema({
     //select:false
   },
   adminOf:[Schema.Types.ObjectId],
-  superadmin: Boolean
+  superadmin: Boolean,
+  emailConfirmed: Boolean 
 });
 
 

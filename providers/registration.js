@@ -5,8 +5,10 @@ var passHash = require('password-hash');
 var merge = require('merge');
 var User = mongoose.model('user');
 var ResetPass = mongoose.model('resetpassword');
+var ConfirmEmail = mongoose.model('confirmemail');
 var randtoken = require('rand-token');
 var nodemailer = require('nodemailer');
+var moment = require('moment');
 
 module.exports = {}
 
@@ -16,113 +18,152 @@ module.exports.hashFunction = function hashFunction(password, tempUserData, inse
   return insertTempUser(hash, tempUserData, callback);
 };
 
-// @{param} function callback(err,options) - optional paramether
-// see node-email-verification API configure function for callback description
-module.exports.configure = function(callback){
-  var options = merge(config.emailConfirmation, {
-    persistentUserModel: User,
-    hashingFunction: module.exports.hashFunction,
-    emailFieldName: 'email',
-    passwordFieldName: 'password'
-  });
-
-  nev.configure(options, callback);
-  nev.generateTempUserModel(User,function(err, tempUserModel){
-    if(err){
-      console.log("Error: " + err);
-      return;
-    }
-
-    console.log("temp model generated: " + (typeof tempUserModel == 'function'));
-  });
-}
-
 
 // POST method, expect new User data
 module.exports.registerUser = function(req,res){
-  //User
-  if (req.body.superadmin) {
-    delete req.body.superadmin;
-  }
+  // TODO validate model
 
+  //User
   if (req.body.password) {
       req.body.password = passHash.generate(req.body.password);
   }
-  var newUser = new User(req.body);
+  var newUser = new User({
+    username: req.body.username,
+    email: req.body.email,
+    password: req.body.password
+  });
 
-  User.find({$or:[{email:newUser.email, username:newUser.username}]}).then(function(users){
-    if(users.length > 0){
-      var err = { message: "" };
-      users.forEach(function(user){
-        if(user.username == newUser.username){
-          console.log("isti username")
-          err.username = "Already exists.";
-          err.message += "Username already taken. ";
-        }
+  newUser.save()
+  .then(function(user){
 
-        if(user.email == newUser.email){
-          console.log("isti email")
-          err.email = "Already exists.";
-          err.message += "Email already taken. ";
-        }
+    // Make and save confirmation token
+    var options = config.emailConfirmation;
+    var token = randtoken.generate(options.tokenLength || 48);
+
+    var confirmEmail = new ConfirmEmail({
+      userId: user.id,
+      confirmToken: token
+    });
+    console.log(confirmEmail);
+    confirmEmail.save().then(function(ce){
+      // send email verification email
+      console.log(ce);
+      var transporter = nodemailer.createTransport(options.transportOptions);
+
+      var codeR = /\$\{CODE\}/g;
+      var urlR  = /\$\{URL\}/g;
+
+      // inject newly-created URL into the email's body and FIRE
+      var URL = options.verificationURL.replace(codeR, ce.confirmToken),
+        mailOptions = JSON.parse(JSON.stringify(options.verifyMailOptions));
+
+      mailOptions.to = user.email;
+      mailOptions.html = mailOptions.html.replace(urlR, URL);
+      mailOptions.text = mailOptions.text.replace(urlR, URL);
+
+      transporter.sendMail(mailOptions).then(function(emailInfo){
+        // verification email sent
+        console.log(emailInfo);
+        res.status(200).send();
+      }).catch(function(err){
+        res.status(404).json(err);
       });
 
-      return res.status(404).json(err);
-    }
-    else {
-      nev.createTempUser(newUser, function(err, newTempUser){
-        if (err)
-          return res.status(500).json({error:err});
+    })
+    .catch(function(err){
+      console.log(err);
+      res.status(404).json(err);
+    }); // confirmEmail.save - END
 
-        // new user created
-        if (newTempUser) {
-          var URL = newTempUser[nev.options.URLFieldName];
+  })
+  .catch(function(err){
+    // TODO check error... check fields, and unique index on username and email.
+    console.log(err);
+    res.status(400).json(err);
+  })
 
-          nev.sendVerificationEmail(newTempUser.email, URL, function(err, info) {
-            if (err) {
-              return res.status(404).send({error:err, message:'ERROR: sending verification email FAILED'});
-            }
-            return res.json({
-              message: 'An email has been sent to you. Please check it to verify your account.',
-              info: info
-            });
-          });
+}
 
-        // user already exists in temporary collection!
-        } else {
-          return res.json({
-            message: 'You have already signed up. Please check your email to verify your account.'
-          });
-        }
-      }); // .createTempUser END
-    }
-  }); // User.find END
-
-  }
-
-// POST method, expect { code: <confirmation code got by email> }
+// POST method, expect { token: <confirmation code got by email> }
 module.exports.confirmEmail = function(req,res){
-  if(!req.body.code){
-    return res.status(404).json({message:'Field \'code\' required.'});
-  }
-
-  try {
-    nev.confirmTempUser(req.body.code, function(err, user) {
-      if (err){
-        return res.status(404).json({error:err,message:'Email confirmation error.'})
-      }
-
-      // user was found!
-      if (user) {
-        return res.json({message:"Email confirmed."});
-
-      } else {
-        return res.status(404).send({message:"Confirmation code expired or invalid."});
-      }
+  if(!req.body.token){
+    return res.status(404).json({
+      code:'required',
+      message:'Field \'code\' required.'
     });
-  } catch (e) {
-    return res.status(404).send({error:e});
   }
+
+  ConfirmEmail.findOne({confirmToken:req.body.token})
+  .then(function(ce){
+    if(!ce){ // confirmation token not found
+      return res.status(400).json({
+        token:'not valid',
+        message:"Token isn't valid"
+      });
+
+    } else {
+      // token found, confirm email and erase token
+      // TODO Check token expiration
+      var options = config.emailConfirmation;
+
+      var duration = moment.duration(moment().diff(moment(ce.createdAt))).seconds();
+      console.log(duration);
+
+      if(duration >= options.expirationTime){
+        return res.status(404).json({
+          token:'expired',
+          message:"Token expired."
+        });
+      }
+
+      User.findOne({_id:ce.userId})
+        .then(function(user){
+          console.log(user);
+          if(!user){
+            throw res.status(400).json({
+              message:"User doesn't exist."
+            });
+          }
+
+          user.emailConfirmed = true;
+
+          user.save().then(function(user){
+            console.log('User saved.');
+            console.log(user);
+          }).catch(function(err){
+            console.log('User save ERR.');
+            console.log(err);
+          });
+          ce.remove();
+
+
+          if(options.shouldSendConfirmation == true){
+
+            var transporter = nodemailer.createTransport(options.transportOptions);
+
+            mailOptions = JSON.parse(JSON.stringify(options.confirmMailOptions));
+
+            mailOptions.to = user.email;
+            mailOptions.html = mailOptions.html;
+            mailOptions.text = mailOptions.text;
+
+            transporter.sendMail(mailOptions).then(function(emailInfo){
+              // verification email sent
+              console.log(emailInfo);
+              res.status(200).send();
+            }).catch(function(err){
+              res.status(404).json(err);
+            });
+
+          } else {
+            res.send();
+          }
+        });
+    }
+  })
+  .catch(function(err){
+    res.status(400).json(err);
+  });
 }
 
 // POST method except { email: <email> }

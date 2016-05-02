@@ -5,4 +5,5 @@ module.exports = function(){
   var Review = require('./review');
   var User = require('./user');
   var ResetPass = require('./resetpassword');
+  var ConfirmEmail = require('./confirmemail');
 };

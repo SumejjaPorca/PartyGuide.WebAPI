@@ -13,14 +13,7 @@ var config = require('./config');
 var cors = require('cors');
 
 require('./models/compile')();
-var registration = require('./providers/registration');
 
-
-registration.configure(function(err,options){
-  if(err) return console.log("Error"+ err);
-  console.log("Configured: ");
-  console.log(options);
-})
 // Connect to database. If failed write message and exit with error status
 mongoose.connect(config.database, function(err){
   if(err){
