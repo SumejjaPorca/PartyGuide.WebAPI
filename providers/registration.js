@@ -107,7 +107,7 @@ module.exports.confirmEmail = function(req,res){
       var options = config.emailConfirmation;
 
       var duration = moment.duration(moment().diff(moment(ce.createdAt))).seconds();
-      console.log(duration);
+      //console.log(duration);
 
       if(duration >= options.expirationTime){
         return res.status(404).json({
@@ -118,7 +118,7 @@ module.exports.confirmEmail = function(req,res){
 
       User.findOne({_id:ce.userId})
         .then(function(user){
-          console.log(user);
+
           if(!user){
             throw res.status(400).json({
               message:"User doesn't exist."
@@ -127,13 +127,7 @@ module.exports.confirmEmail = function(req,res){
 
           user.emailConfirmed = true;
 
-          user.save().then(function(user){
-            console.log('User saved.');
-            console.log(user);
-          }).catch(function(err){
-            console.log('User save ERR.');
-            console.log(err);
-          });
+          user.save();
           ce.remove();
 
 
@@ -180,13 +174,10 @@ module.exports.requestResetPassword = function(req,res) {
     var codeR = /\$\{CODE\}/g;
     var urlR  = /\$\{URL\}/g;
 
-    console.log(email);
-    console.log(code);
-
     // inject newly-created URL into the email's body and FIRE
     var URL = options.resetURL.replace(codeR, code),
       mailOptions = JSON.parse(JSON.stringify(options.resetMailOptions));
-    console.log(mailOptions);
+
     mailOptions.to = email;
     mailOptions.html = mailOptions.html.replace(urlR, URL);
     mailOptions.text = mailOptions.text.replace(urlR, URL);
@@ -221,7 +212,7 @@ module.exports.requestResetPassword = function(req,res) {
             return;
           }
 
-          res.json(info);
+          res.send();
         });
       });
     });
@@ -231,15 +222,16 @@ module.exports.requestResetPassword = function(req,res) {
 
 // POST method except { code: <reset code got by email>, password: <new password> }
 module.exports.resetPassword = function(req,res){
-  if(!req.body.code){
-    return res.status(404).json({code:"required", message:"Reset code is required. "});
+  if(!req.body.token){
+    return res.status(404).json({token:"required", message:"Reset token is required. "});
   }
   if(!req.body.password){
     return res.status(404).json({password:"required", message:"Password is required. "});
   }
+  // TODO Politika passworda
 
   // Check for is there reset code
-  ResetPass.findOne({resetCode:req.body.code}, function(err, reset){
+  ResetPass.findOne({resetCode:req.body.token}, function(err, reset){
     if(err){
       return res.status(404).json({error:err});
     }
@@ -249,6 +241,18 @@ module.exports.resetPassword = function(req,res){
       return res.status(404).json({code:"used or not valid", message:"Reset code is already used or invalid."});
     }
 
+    // check token expiration
+    var options = config.resetPassword;
+
+    var duration = moment.duration(moment().diff(moment(reset.createdAt))).seconds();
+    console.log(duration);
+
+    if(duration >= options.expirationTime){
+      return res.status(404).json({
+        token:'expired',
+        message:"Reset token expired."
+      });
+    }
     // find user and change password
     User.findOne({_id:reset.userId}, function(err, user){
       if(err){

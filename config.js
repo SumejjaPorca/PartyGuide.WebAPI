@@ -33,6 +33,7 @@ module.exports = {
   },
   'resetPassword':{
     tokenLength:64,
+    expirationTime:360, // 1h
     resetURL:'http://localhost:3000/#/reset-password/${CODE}',
     resetMailOptions:{
       from: 'Do Not Reply <partyguide.nwt@gmail.com>',

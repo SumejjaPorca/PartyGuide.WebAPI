@@ -9,6 +9,11 @@ var ResetPassSchema = new Schema({
   resetCode:{
     type:String,
     required:true
+  },
+  createdAt:{
+    type:Date,
+    required:true,
+    default:Date.now
   }
 });
 
