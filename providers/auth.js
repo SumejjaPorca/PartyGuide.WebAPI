@@ -20,15 +20,17 @@ module.exports.getToken = function(req,res){
   }
 
   // find user with this username
-  User.findOne({ $or: [{username:req.body.username},{email:req.body.username}] }).select({'password':1,'username':1}).then(function(user){
+  User.findOne({ $or: [{username:req.body.username},{email:req.body.username}] }).then(function(user){
     // check does user exist
     if (!user){
-      res.status(400).json({success:false, message:"Wrong username."});
+      res.status(400).json({ success:false, message:"Wrong username or password."});
+    } else if(!user.emailConfirmed){
+      res.status(400).json({success:false, email:"not confirmed", message:"Email isn't confirmed."})
     } else {
         // check does password match
       if(!passHash.verify(req.body.password, user.password)){
         // password doesn't match
-        res.status(400).json({success:false, message:"Wrong password."});
+        res.status(400).json({success:false, message:"Wrong username or password."});
       } else {
         // password match
 

@@ -6,7 +6,8 @@ var emailRgx = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@
 var UserSchema = new Schema({
   username: {
     type:String,
-    required:true
+    required:true,
+    minlength:6
   },
   email:{
     type:String,
@@ -21,7 +22,7 @@ var UserSchema = new Schema({
   },
   adminOf:[Schema.Types.ObjectId],
   superadmin: Boolean,
-  emailConfirmed: Boolean 
+  emailConfirmed: Boolean
 });
 
 

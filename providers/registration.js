@@ -18,77 +18,125 @@ module.exports.hashFunction = function hashFunction(password, tempUserData, inse
   return insertTempUser(hash, tempUserData, callback);
 };
 
-
 // POST method, expect new User data
 module.exports.registerUser = function(req,res){
   // TODO validate model
 
   //User
+
+
   if (req.body.password) {
+      if(!checkPassword(req.body.password)){
+        return res.status(400).json({
+          password:"weak",
+          message:"Password is weak."
+        })
+      };
       req.body.password = passHash.generate(req.body.password);
   }
+
   var newUser = new User({
     username: req.body.username,
     email: req.body.email,
     password: req.body.password
   });
 
-  newUser.save()
-  .then(function(user){
+  console.log(newUser);
+  User.find({ $or: [{email:newUser.email}, {username:newUser.username}] })
+  .then(function(users){
+    console.log("Postoji vec");
+    console.log(users);
+    if(users.length > 0){
+      var err = { message: "" };
+      users.forEach(function(user){
+        if(user.username == newUser.username){
+          err.username = "exists";
+          err.message += "Username already taken. ";
+        }
 
-    // Make and save confirmation token
-    var options = config.emailConfirmation;
-    var token = randtoken.generate(options.tokenLength || 48);
-
-    var confirmEmail = new ConfirmEmail({
-      userId: user.id,
-      confirmToken: token
-    });
-    console.log(confirmEmail);
-    confirmEmail.save().then(function(ce){
-      // send email verification email
-      console.log(ce);
-      var transporter = nodemailer.createTransport(options.transportOptions);
-
-      var codeR = /\$\{CODE\}/g;
-      var urlR  = /\$\{URL\}/g;
-
-      // inject newly-created URL into the email's body and FIRE
-      var URL = options.verificationURL.replace(codeR, ce.confirmToken),
-        mailOptions = JSON.parse(JSON.stringify(options.verifyMailOptions));
-
-      mailOptions.to = user.email;
-      mailOptions.html = mailOptions.html.replace(urlR, URL);
-      mailOptions.text = mailOptions.text.replace(urlR, URL);
-
-      transporter.sendMail(mailOptions).then(function(emailInfo){
-        // verification email sent
-        console.log(emailInfo);
-        res.status(200).send();
-      }).catch(function(err){
-        res.status(404).json(err);
+        if(user.email == newUser.email){
+          err.email = "exists";
+          err.message += "Email already taken. ";
+        }
       });
 
-    })
-    .catch(function(err){
-      console.log(err);
-      res.status(404).json(err);
-    }); // confirmEmail.save - END
+      return res.status(404).json(err);
+    }
+    else {
 
-  })
-  .catch(function(err){
-    // TODO check error... check fields, and unique index on username and email.
-    console.log(err);
-    res.status(400).json(err);
-  })
+      newUser.save()
+      .then(function(user){
 
+        // Make and save confirmation token
+        var options = config.emailConfirmation;
+        var token = randtoken.generate(options.tokenLength || 48);
+
+        var confirmEmail = new ConfirmEmail({
+          userId: user.id,
+          confirmToken: token
+        });
+        console.log(confirmEmail);
+        confirmEmail.save().then(function(ce){
+          // send email verification email
+          console.log(ce);
+          var transporter = nodemailer.createTransport(options.transportOptions);
+
+          var codeR = /\$\{CODE\}/g;
+          var urlR  = /\$\{URL\}/g;
+
+          // inject newly-created URL into the email's body and FIRE
+          var URL = options.verificationURL.replace(codeR, ce.confirmToken),
+            mailOptions = JSON.parse(JSON.stringify(options.verifyMailOptions));
+
+          mailOptions.to = user.email;
+          mailOptions.html = mailOptions.html.replace(urlR, URL);
+          mailOptions.text = mailOptions.text.replace(urlR, URL);
+
+          transporter.sendMail(mailOptions).then(function(emailInfo){
+            // verification email sent
+            console.log(emailInfo);
+            res.status(200).send();
+          }).catch(function(err){
+            res.status(404).json(err);
+          });
+
+        })
+        .catch(function(err){ // confirmEmail catch
+
+          console.log(err);
+          res.status(404).json(err);
+        }); // confirmEmail.save - END
+
+      })
+      .catch(function(err){ //
+        // TODO check error... check fields, and unique index on username and email.
+        console.log(err);
+        errs = {};
+        if(err.errors.username){
+          errs.username  = err.errors.username.kind;
+        }
+        if(err.errors.password){
+          errs.password = err.errors.password.kind;
+        }
+        if(err.errors.email){
+          if(err.errors.email.kind == "regexp"){
+            errs.email = "not valid";
+          }
+          else
+            errs.email = err.errors.email.kind;
+        }
+        console.log(err);
+        res.status(400).json(errs);
+      })
+    } // else END
+  }); // User.find END
 }
 
 // POST method, expect { token: <confirmation code got by email> }
 module.exports.confirmEmail = function(req,res){
   if(!req.body.token){
     return res.status(404).json({
-      code:'required',
+      token:'required',
       message:'Field \'code\' required.'
     });
   }
@@ -228,8 +276,14 @@ module.exports.resetPassword = function(req,res){
   if(!req.body.password){
     return res.status(404).json({password:"required", message:"Password is required. "});
   }
-  // TODO Politika passworda
 
+  // TODO Politika passworda
+  if(!checkPassword(req.body.password)){
+    return res.status(400).json({
+      password:"weak",
+      message:"Password is weak."
+    })
+  };
   // Check for is there reset code
   ResetPass.findOne({resetCode:req.body.token}, function(err, reset){
     if(err){
@@ -238,7 +292,7 @@ module.exports.resetPassword = function(req,res){
 
     // there is no reset code, probably used earlier
     if(!reset){
-      return res.status(404).json({code:"used or not valid", message:"Reset code is already used or invalid."});
+      return res.status(404).json({token:"not valid", message:"Reset code is already used or invalid."});
     }
 
     // check token expiration
@@ -279,3 +333,23 @@ module.exports.resetPassword = function(req,res){
     });
   }) // ResetPass.findOne END
 } // .resetPassword END
+
+function checkPassword(password){
+  if(password.length < 8)
+    return false;
+
+  var low = false;
+  var up = false;
+
+  for(var i = 0; i < password.length; i++){
+    var c = password[i];
+    if(c == c.toUpperCase()){
+      up = true;
+    }
+    if(c == c.toLowerCase()){
+      low = true;
+    }
+
+  }
+  return low && up;
+}
