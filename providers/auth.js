@@ -11,26 +11,26 @@ module.exports.getToken = function(req,res){
 
   // username required
   if(!req.body.username){
-    res.status(400).json({success:false, message:"username required"});
+    res.status(400).json({success:false, username:"required", message:"username required"});
   }
 
   // password is required
   if(!req.body.password){
-    res.status(400).json({success:false, message:"password required"});
+    res.status(400).json({success:false, username:"required", message:"password required"});
   }
 
   // find user with this username
   User.findOne({ $or: [{username:req.body.username},{email:req.body.username}] }).then(function(user){
     // check does user exist
     if (!user){
-      res.status(400).json({ success:false, message:"Wrong username or password."});
+      res.status(400).json({ success:false, username:"wrong", password:"wrong", message:"Wrong username or password."});
     } else if(!user.emailConfirmed){
       res.status(400).json({success:false, email:"not confirmed", message:"Email isn't confirmed."})
     } else {
         // check does password match
       if(!passHash.verify(req.body.password, user.password)){
         // password doesn't match
-        res.status(400).json({success:false, message:"Wrong username or password."});
+        res.status(400).json({success:false, username:"wrong", password:"wrong", message:"Wrong username or password."});
       } else {
         // password match
 

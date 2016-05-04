@@ -20,11 +20,8 @@ module.exports.hashFunction = function hashFunction(password, tempUserData, inse
 
 // POST method, expect new User data
 module.exports.registerUser = function(req,res){
-  // TODO validate model
 
   //User
-
-
   if (req.body.password) {
       if(!checkPassword(req.body.password)){
         return res.status(400).json({
@@ -44,8 +41,7 @@ module.exports.registerUser = function(req,res){
   console.log(newUser);
   User.find({ $or: [{email:newUser.email}, {username:newUser.username}] })
   .then(function(users){
-    console.log("Postoji vec");
-    console.log(users);
+
     if(users.length > 0){
       var err = { message: "" };
       users.forEach(function(user){
@@ -75,10 +71,9 @@ module.exports.registerUser = function(req,res){
           userId: user.id,
           confirmToken: token
         });
-        console.log(confirmEmail);
+
         confirmEmail.save().then(function(ce){
           // send email verification email
-          console.log(ce);
           var transporter = nodemailer.createTransport(options.transportOptions);
 
           var codeR = /\$\{CODE\}/g;
@@ -94,7 +89,6 @@ module.exports.registerUser = function(req,res){
 
           transporter.sendMail(mailOptions).then(function(emailInfo){
             // verification email sent
-            console.log(emailInfo);
             res.status(200).send();
           }).catch(function(err){
             res.status(404).json(err);
@@ -103,14 +97,12 @@ module.exports.registerUser = function(req,res){
         })
         .catch(function(err){ // confirmEmail catch
 
-          console.log(err);
           res.status(404).json(err);
         }); // confirmEmail.save - END
 
       })
       .catch(function(err){ //
         // TODO check error... check fields, and unique index on username and email.
-        console.log(err);
         errs = {};
         if(err.errors.username){
           errs.username  = err.errors.username.kind;
@@ -125,7 +117,7 @@ module.exports.registerUser = function(req,res){
           else
             errs.email = err.errors.email.kind;
         }
-        console.log(err);
+        
         res.status(400).json(errs);
       })
     } // else END
