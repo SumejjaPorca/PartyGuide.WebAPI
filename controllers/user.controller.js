@@ -26,5 +26,14 @@ UserCtrl.post('/reset-pass', registrationProvider.resetPassword);
 // POST {"username":<username>,"password":<password>}
 UserCtrl.post('/login', authProvider.getToken);
 
+authProvider.authorize(UserCtrl, 'get', '/search/:name', function(req,res){
+  var param = new RegExp(req.params.name.replace(/\s+/g,''),'i');
+  console.log(param);
+  User.find({$or:[{username:param},{email:param}]}).then(function(users){
+    res.json(users);
+  }).catch(function(err){
+    res.status(400).json(err);
+  });
+});
 
 module.exports = UserCtrl

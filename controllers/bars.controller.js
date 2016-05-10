@@ -102,6 +102,7 @@ authProvider.authorize(BarCtrl, 'delete', '/:id', function(req, res){
   Bar.findOne({_id:req.params.id}).then(function(bar){
     if (!bar) return res.status(404).json({
       success:false,
+      id:"wrong id",
       message:"There is no bar with this id."
     });
     // remove bar
@@ -154,7 +155,7 @@ authProvider.authorize(BarCtrl, 'put', '/:id', function(req, res){
 // Get all bar admins
 authProvider.authorize(BarCtrl, 'get', '/:id/admins', function(req,res){
   var barId = req.params.id;
-  User.find({adminOf:barId}).select("id username").then(function(users){
+  User.find({adminOf:barId}).select("id username email").then(function(users){
     res.status(200).json(users);
   }, function(err){
     // database error

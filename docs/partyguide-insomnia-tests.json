@@ -1,7 +1,7 @@
 {
   "_type": "export",
   "__export_format": 1,
-  "__export_date": "2016-03-30T20:44:10.204Z",
+  "__export_date": "2016-05-04T10:06:01.694Z",
   "__export_source": "insomnia.chrome.app:v2.6.10",
   "items": [
     {
@@ -15,7 +15,7 @@
           "_id": "req_1459257282245",
           "url": "http://localhost:8080/api/user/register",
           "method": "POST",
-          "body": "{\n    \"username\":\"sumi\",\n    \"email\":\"sumejja93@hotmail.com\",\n    \"password\":\"UnoMomento123\"\n}",
+          "body": "{\n    \"username\":\"luka2\",\n    \"email\":\"pejovicluka454@gmail.com\",\n    \"password\":\"UnoMomento123\"\n}",
           "headers": [],
           "params": [],
           "authentication": {
@@ -31,10 +31,29 @@
         },
         {
           "_type": "request",
+          "_id": "req_1461095583626",
+          "url": "http://localhost:8080/api/user/confirm-email",
+          "method": "POST",
+          "body": "{\n    \"token\": \"orXaZBA0odR0xkUY71HEAf65isPJIgCLfnoW42GsbB3BvE0n\"\n}",
+          "headers": [],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "email confirmation"
+        },
+        {
+          "_type": "request",
           "_id": "req_1459257925319",
           "url": "http://localhost:8080/api/user/login",
           "method": "POST",
-          "body": "{\n    \"username\":\"sumi\",\n    \"password\":\"UnoMomento123\"\n}",
+          "body": "{\n    \"username\":\"luka2\",\n    \"password\":\"nekiNoviKlinci\"\n}",
           "headers": [],
           "params": [],
           "authentication": {
@@ -57,7 +76,7 @@
           "headers": [
             {
               "name": "x-access-token",
-              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU2ZmE4MWJhZmViZDU1MTQxZDIwZGNjOSIsImlhdCI6MTQ1OTM0NDA1OCwiZXhwIjoxNDU5NDMwNDU4fQ.EjLgIPtYiRsBt4rkTdJZwt2xNeD14SbSD6qT1O59pmsX"
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU3MjhhZWQ0ZWRiZjdkZDQyYTg2OTI2YyIsImlhdCI6MTQ2MjMxMzY0MSwiZXhwIjoxNDYyNDAwMDQxfQ.h6VCnznEeLXTXxg5ql3xE35NKC2IeomiNQhVURTxTkA"
             }
           ],
           "params": [],
@@ -119,6 +138,44 @@
             "panel_width": 0.5
           },
           "name": "invalidToken"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1461144964503",
+          "url": "http://localhost:8080/api/user/request-reset-pass",
+          "method": "POST",
+          "body": "{\n    \"email\":\"pejovicluka454@gmail.com\"\n}",
+          "headers": [],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "request reset"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1461146956742",
+          "url": "http://localhost:8080/api/user/reset-pass",
+          "method": "POST",
+          "body": "{\n    \"token\":\"zj3yxGau8xd6ppvHtMiv8HloGAPNM63bYGhcdip1muarbK2vt2shxvuNGxhHe9zs\",\n    \"password\":\"nekiNoviKlinci\"\n}",
+          "headers": [],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "reset password"
         }
       ]
     },
