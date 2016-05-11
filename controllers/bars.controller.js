@@ -18,7 +18,7 @@ BarCtrl.get('/',function(req, res){
 
 // Get all bars by name
 BarCtrl.get('/byName/:name',function(req, res){
-
+  console.log(req.params.name);
   Bar.find({name: new RegExp(req.params.name,'i') }).then(function(bars){
     return res.status(200).json(bars);
   }, function(err){

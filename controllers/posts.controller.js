@@ -17,8 +17,7 @@ PostCtrl.get('/bars/:barId/posts',function(req, res){
         Post.find(
           {
             barId: req.params.barId
-          },
-          function(err, data){
+          }).sort({dateCreated:-1}).exec(function(err, data){
             if (err) return res.json(err);
             res.json(data);
           });
