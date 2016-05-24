@@ -33,7 +33,13 @@ module.exports.getToken = function(req,res){
         res.status(400).json({success:false, username:"wrong", password:"wrong", message:"Wrong username or password."});
       } else {
         // password match
-
+        if(user.banned){
+          return res.status(401).json({
+            success:false,
+            banned:true,
+            message:"You are currently banned."
+          });
+        }
         // get token. JWT's payload has only user's id
         var token = jwt.sign({id:user.id}, config.secret, {
           expiresIn: config.tokenExpiration
@@ -99,6 +105,13 @@ module.exports.middleware = function(req,res,next){
           });
         } else {
           // User found - save it for later use
+          if(user.banned){
+            return res.status(401).json({
+              succes:false,
+              banned:true,
+              message:"You are currently banned."
+            })
+          }
           delete user.password;
           req.user = user;
           next();

@@ -22,7 +22,8 @@ var UserSchema = new Schema({
   },
   adminOf:[Schema.Types.ObjectId],
   superadmin: Boolean,
-  emailConfirmed: Boolean
+  emailConfirmed: Boolean,
+  banned:Boolean
 });
 
 

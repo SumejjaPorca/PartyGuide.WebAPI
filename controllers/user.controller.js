@@ -36,4 +36,53 @@ authProvider.authorize(UserCtrl, 'get', '/search/:name', function(req,res){
   });
 });
 
+authProvider.authorize(UserCtrl, 'put', '/:id/ban', function(req,res){
+  if(!req.user.superadmin){
+    return res.status(401).json({
+      success:false,
+      notSuperadmin:true,
+      message:"You must be superadmin to perform this action."
+    });
+  }
+
+  User.findOne({_id:req.params.id}).then(function(user){
+    if(!user){
+      return res.status(400).json({
+        user:"wrong",
+        message:"There is no user with this ID."
+      })
+    }
+
+    user.banned = true;
+    user.save();
+
+    return res.send();
+  });
+
+});
+
+authProvider.authorize(UserCtrl, 'put', '/:id/unban', function(req,res){
+  if(!req.user.superadmin){
+    return res.status(401).json({
+      success:false,
+      notSuperadmin:true,
+      message:"You must be superadmin to perform this action."
+    });
+  }
+
+  User.findOne({_id:req.params.id}).then(function(user){
+    if(!user){
+      return res.status(400).json({
+        user:"wrong",
+        message:"There is no user with this ID."
+      })
+    }
+
+    user.banned = false;
+    user.save();
+
+    return res.send();
+  });
+
+});
 module.exports = UserCtrl
