@@ -4,8 +4,19 @@ var Bar = mongoose.model('bar'); // Bar model
 var User = mongoose.model('user');
 var authProvider = require('../providers/auth');
 
-// Our controller is router which we will exports
-var BarCtrl = express.Router()
+// Our controller is router which we will export
+var BarCtrl = express.Router();
+
+BarCtrl.get('/statistics', function(req, res){
+  Bar.count(function(err, c) {
+          if(err)
+            res.status(400).json(err);
+          else
+           return res.status(200).json({
+             count: c
+           });
+      });
+});
 
 // Get all bars
 BarCtrl.get('/',function(req, res){
