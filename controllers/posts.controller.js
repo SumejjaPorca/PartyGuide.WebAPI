@@ -7,6 +7,26 @@ var authProvider = require('../providers/auth') //auth provider to authorize met
 // controller will be exported and used as Router
 var PostCtrl = express.Router()
 
+PostCtrl.get('/posts/statistics', function(req, res){
+  var week = getWeek(),
+      response = {};
+      response.dates = week;
+      week[6].setHours(24);
+      response.counts = [0,0,0,0,0,0,0];
+      Post.find({dateCreated: {$gt:week[0], $lt: week[6]}}, function(err, data){
+        if(err)
+          return res.status(400).json(err);
+        console.log('HELLO ' + data.length);
+        data.forEach(function(item){
+          week.forEach(function(item2, index){
+            if(SameDay(item2, item.dateCreated))
+             response.counts[index]++;
+            });
+          });
+        return res.json(response);
+      });
+});
+
 // Get all by barId
 PostCtrl.get('/bars/:barId/posts',function(req, res){
   //check if bar with specified id exists
@@ -77,5 +97,30 @@ PostCtrl.get('/posts/:id', function(req, res){
       }
   });
 });
+
+function getWeek() {
+  d = new Date();
+  var day = d.getDay(),
+      diff = d.getDate() - day + (day == 0 ? -6:1);
+  var monday = new Date(d.setDate(diff));
+  monday.setHours(0);
+  monday.setMinutes(0);
+  monday.setSeconds(0);
+  var week =  [monday, new Date(monday), new Date(monday), new Date(monday), new Date(monday),
+  new Date(monday), new Date(monday)];
+  week.forEach(function(item, index){
+    item.setDate(diff + index);
+  });
+  return week;
+}
+
+function SameDay(one, two){
+  var millisecondsPerDay = 1000 * 60 * 60 * 24;
+  var millisBetween = two.getTime() - one.getTime();
+  var days = millisBetween / millisecondsPerDay;
+
+  // Round down.
+  return Math.floor(days) < 1 && Math.floor(days) >= 0;
+}
 
 module.exports = PostCtrl

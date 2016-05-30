@@ -26,6 +26,17 @@ UserCtrl.post('/reset-pass', registrationProvider.resetPassword);
 // POST {"username":<username>,"password":<password>}
 UserCtrl.post('/login', authProvider.getToken);
 
+UserCtrl.get('/statistics', function(req, res){
+  User.count(function(err, c) {
+          if(err)
+            res.status(400).json(err);
+          else
+           return res.status(200).json({
+             count: c
+           });
+      });
+});
+
 authProvider.authorize(UserCtrl, 'get', '/search/:name', function(req,res){
   var param = new RegExp(req.params.name.replace(/\s+/g,''),'i');
   console.log(param);

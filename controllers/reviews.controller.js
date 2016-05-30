@@ -7,6 +7,17 @@ var authProvider = require('../providers/auth') //auth provider to authorize met
 // controller will be exported and used as Router
 var ReviewCtrl = express.Router();
 
+ReviewCtrl.get('/reviews/statistics', function(req, res){
+  Review.count(function(err, c) {
+          if(err)
+            res.status(400).json(err);
+          else
+           return res.status(200).json({
+             count: c
+           });
+      });
+});
+
 // Get all by barId
 ReviewCtrl.get('/bars/:barId/reviews',function(req, res){
   //check if bar with specified id exists
