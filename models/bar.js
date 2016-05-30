@@ -17,7 +17,8 @@ var BarSchema = new Schema({
     match:[phoneRgx, "Wrong phone number format."]
   },
   tags: [String],
-  description:String
+  description:String,
+  image:String
 });
 
 // we need to ensureIndex so we can search with nearSphere

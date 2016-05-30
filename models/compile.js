@@ -6,4 +6,5 @@ module.exports = function(){
   var User = require('./user');
   var ResetPass = require('./resetpassword');
   var ConfirmEmail = require('./confirmemail');
+  var Image = require('./image')
 };

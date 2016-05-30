@@ -140,6 +140,7 @@ authProvider.authorize(BarCtrl, 'put', '/:id', function(req, res){
     bar.location = req.body.location;
     bar.phone = req.body.phone;
     bar.tags = req.body.tags;
+    bar.image = req.body.image;
 
     bar.save(function(err){
       if(err) return res.status(400).json(err);

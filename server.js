@@ -58,6 +58,10 @@ router.use('', PostCtrl);
 var ReviewCtrl = require('./controllers/reviews.controller');
 router.use('', ReviewCtrl);
 
+var ImageCtrl = require('./controllers/image.controller');
+router.use('/images', ImageCtrl);
+
+
 // more routes for our API will happen here
 
 // REGISTER OUR ROUTES -------------------------------
