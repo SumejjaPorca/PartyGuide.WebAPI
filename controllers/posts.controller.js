@@ -8,19 +8,22 @@ var authProvider = require('../providers/auth') //auth provider to authorize met
 var PostCtrl = express.Router()
 
 PostCtrl.get('/posts/statistics', function(req, res){
-  var week = getWeek(),
+    var week = getWeekMoment(),
       response = {};
       response.dates = week;
       var last = new Date(week[6]);
       last.setHours(24);
       response.counts = [0,0,0,0,0,0,0];
-      if(req.params.events != undefined){
+
+      if(req.query.events){
         Post.find({dateCreated: {$gt:week[0], $lt: last}, date: { $exists: true }}, function(err, data){
           if(err)
             return res.status(400).json(err);
+
           data.forEach(function(item){
             week.forEach(function(item2, index){
-              if(SameDay(item2, item.dateCreated))
+              //if(SameDay(item2, item.dateCreated))
+              if(item2.isSame(item.dateCreated, 'day'))
                response.counts[index]++;
               });
             });
@@ -31,9 +34,11 @@ PostCtrl.get('/posts/statistics', function(req, res){
         Post.find({dateCreated: {$gt:week[0], $lt: last}}, function(err, data){
           if(err)
             return res.status(400).json(err);
+
           data.forEach(function(item){
             week.forEach(function(item2, index){
-              if(SameDay(item2, item.dateCreated))
+              //if(SameDay(item2, item.dateCreated))
+              if(item2.isSame(item.dateCreated, 'day'))
                response.counts[index]++;
               });
             });
@@ -53,7 +58,7 @@ PostCtrl.get('/bars/:barId/posts',function(req, res){
         Post.find(
           {
             barId: req.params.barId
-          }).sort({dateCreated:-1}).exec(function(err, data){
+          }).sort({dateCreated:1}).exec(function(err, data){
             if (err) return res.json(err);
             res.json(data);
           });
@@ -113,6 +118,17 @@ PostCtrl.get('/posts/:id', function(req, res){
       }
   });
 });
+
+var moment = require('moment');
+function getWeekMoment(){
+  var days = []
+  var l = [6,5,4,3,2,1,0]
+  l.forEach(function(item){
+    days.push(moment().subtract(item,'days'))
+  })
+
+  return days;
+}
 
 function getWeek() {
 
