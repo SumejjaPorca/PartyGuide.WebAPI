@@ -11,12 +11,15 @@ PostCtrl.get('/posts/statistics', function(req, res){
   var week = getWeek(),
       response = {};
       response.dates = week;
-      week[6].setHours(24);
+      var last = week[6];
+      last.setHours(24);
       response.counts = [0,0,0,0,0,0,0];
-      Post.find({dateCreated: {$gt:week[0], $lt: week[6]}}, function(err, data){
+      var ops = {dateCreated: {$gt:week[0], $lt: last}};
+      if(req.params.events != undefined)
+        ops = {dateCreated: {$gt:week[0], $lt: last}, date: { $exists: true }};
+      Post.find(ops, function(err, data){
         if(err)
           return res.status(400).json(err);
-        console.log('HELLO ' + data.length);
         data.forEach(function(item){
           week.forEach(function(item2, index){
             if(SameDay(item2, item.dateCreated))
@@ -101,7 +104,7 @@ PostCtrl.get('/posts/:id', function(req, res){
 function getWeek() {
   d = new Date();
   var day = d.getDay(),
-      diff = d.getDate() - day + (day == 0 ? -6:1);
+      diff = d.getDate() - day + (day == 0 ? -6:1) - 7;
   var monday = new Date(d.setDate(diff));
   monday.setHours(0);
   monday.setMinutes(0);

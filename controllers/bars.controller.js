@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var Bar = mongoose.model('bar'); // Bar model
 var User = mongoose.model('user');
 var authProvider = require('../providers/auth');
+var Review = mongoose.model('review');
 
 // Our controller is router which we will export
 var BarCtrl = express.Router();
@@ -16,6 +17,25 @@ BarCtrl.get('/statistics', function(req, res){
              count: c
            });
       });
+});
+
+//Get three best reviewed bars
+BarCtrl.get('/top', function(req, res){
+  Review.aggregate([{$group: {_id: "$barId"}, total: {$sum: "$rate"},
+    count: {$sum: "1"}}, {$limit: 3}]).then(function(barIds){
+      Bar.find( { id: { $in: barIds } } ).then(function(bars){
+        barIds.sort(function(a, b){
+          return a.total/a.count > b.total/b.count;
+        });
+        barIds.forEach(function(item){
+          bars.forEach(function(bar){
+            if(bar.id === item._id)
+              item.barName = bar.name;
+          });
+        });
+        return res.status(200).json(barIds);
+      })
+  });
 });
 
 // Get all bars

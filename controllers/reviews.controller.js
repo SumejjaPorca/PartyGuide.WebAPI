@@ -18,6 +18,8 @@ ReviewCtrl.get('/reviews/statistics', function(req, res){
       });
 });
 
+
+
 // Get all by barId
 ReviewCtrl.get('/bars/:barId/reviews',function(req, res){
   //check if bar with specified id exists
@@ -96,7 +98,6 @@ authProvider.authorize(ReviewCtrl, 'delete', '/reviews/:id', function(req, res){
       });
     }
     // remove review
-    console.log("ovjde");
     review.remove(function(err){
       if (err) return res.status(400).json({
         success:false,
