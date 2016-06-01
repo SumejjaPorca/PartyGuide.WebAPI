@@ -21,19 +21,35 @@ BarCtrl.get('/statistics', function(req, res){
 
 //Get three best reviewed bars
 BarCtrl.get('/top', function(req, res){
-  Review.aggregate([{$group: {_id: "$barId"}, total: {$sum: "$rate"},
-    count: {$sum: "1"}}, {$limit: 3}]).then(function(barIds){
-      Bar.find( { id: { $in: barIds } } ).then(function(bars){
+  Review.aggregate([{
+    $group: {
+      _id: "$barId",
+      total: {$sum: "$rate"},
+      num: {$sum: 1}
+    }
+  },
+  {$limit: 3}], function(err, barIds){
+    var ids = barIds.map(function(x){return x._id;});
+    console.log(ids);
+      Bar.find( { _id: { $in: ids } } ).then(function(bars){
+        console.log(bars);
+        var response = [];
         barIds.sort(function(a, b){
-          return a.total/a.count > b.total/b.count;
+          return a.total/a.num > b.total/b.num;
         });
+        console.log(barIds);
         barIds.forEach(function(item){
           bars.forEach(function(bar){
-            if(bar.id === item._id)
-              item.barName = bar.name;
+            if(bar._id.equals(item._id))
+              response.push({
+                _id: item._id,
+                total: item.total,
+                num: item.num,
+                barName: bar.name
+              });
           });
         });
-        return res.status(200).json(barIds);
+        return res.status(200).json(response);
       })
   });
 });

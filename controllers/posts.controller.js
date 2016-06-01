@@ -11,23 +11,36 @@ PostCtrl.get('/posts/statistics', function(req, res){
   var week = getWeek(),
       response = {};
       response.dates = week;
-      var last = week[6];
+      var last = new Date(week[6]);
       last.setHours(24);
       response.counts = [0,0,0,0,0,0,0];
-      var ops = {dateCreated: {$gt:week[0], $lt: last}};
-      if(req.params.events != undefined)
-        ops = {dateCreated: {$gt:week[0], $lt: last}, date: { $exists: true }};
-      Post.find(ops, function(err, data){
-        if(err)
-          return res.status(400).json(err);
-        data.forEach(function(item){
-          week.forEach(function(item2, index){
-            if(SameDay(item2, item.dateCreated))
-             response.counts[index]++;
+      if(req.params.events != undefined){
+        Post.find({dateCreated: {$gt:week[0], $lt: last}, date: { $exists: true }}, function(err, data){
+          if(err)
+            return res.status(400).json(err);
+          data.forEach(function(item){
+            week.forEach(function(item2, index){
+              if(SameDay(item2, item.dateCreated))
+               response.counts[index]++;
+              });
             });
-          });
-        return res.json(response);
-      });
+          return res.json(response);
+        });
+      }
+      else{
+        Post.find({dateCreated: {$gt:week[0], $lt: last}}, function(err, data){
+          if(err)
+            return res.status(400).json(err);
+          data.forEach(function(item){
+            week.forEach(function(item2, index){
+              if(SameDay(item2, item.dateCreated))
+               response.counts[index]++;
+              });
+            });
+          return res.json(response);
+        });
+      }
+
 });
 
 // Get all by barId
@@ -102,17 +115,22 @@ PostCtrl.get('/posts/:id', function(req, res){
 });
 
 function getWeek() {
+
   d = new Date();
   var day = d.getDay(),
-      diff = d.getDate() - day + (day == 0 ? -6:1) - 7;
+      diff = d.getDate() - day + (day == 0 ? -6:1);
+      console.log(diff);
   var monday = new Date(d.setDate(diff));
   monday.setHours(0);
   monday.setMinutes(0);
   monday.setSeconds(0);
+  console.log(monday);
   var week =  [monday, new Date(monday), new Date(monday), new Date(monday), new Date(monday),
   new Date(monday), new Date(monday)];
   week.forEach(function(item, index){
     item.setDate(diff + index);
+    console.log(diff );
+    console.log(index);
   });
   return week;
 }
